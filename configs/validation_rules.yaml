@@ -1,0 +1,181 @@
+# Enterprise validation catalog — maps logical checks to silver column names.
+# Severities: S0 INFO, S1 LOW, S2 MEDIUM, S3 HIGH, S4 CRITICAL, S5 FATAL
+
+version: 2
+
+# Logical → physical column names on silver extracts
+# CALIBRATION UPDATE (2025-05-15):
+# - transaction_id: Use standardized version (0% null vs 63% raw)
+# - transaction_date: Use messy_txn_date_parsed (0% null vs 40% txn_date_parsed)
+#   with messy_txn_date as fallback (100% coverage vs txn_date)
+# - currency_code_secondary: Use operating_currency for better fallback coverage
+#   than currency_code column (77% null)
+field_mapping:
+  transaction_id: txn_id_standardized
+  transaction_date: messy_txn_date_parsed
+  transaction_date_raw_fallback: messy_txn_date
+  transaction_amount: messy_amount_amount_numeric
+  transaction_amount_fallback: amount_inr_amount_numeric
+  currency_code_primary: messy_amount_currency_code
+  currency_code_secondary: operating_currency
+  account_id: primary_account_number_standardized
+  account_id_fallback: primary_account_number
+
+# Rows with max severity >= reject_from_severity go to rejects (default S4).
+reject_from_severity: S4
+
+# Rows with issues but max severity below reject threshold → warnings dataset.
+warning_up_to_severity: S3
+
+# ISO-4217 codes considered supported for FX / currency checks (extend per bank).
+supported_currencies:
+  - AED
+  - AUD
+  - CAD
+  - CHF
+  - CNY
+  - EUR
+  - GBP
+  - HKD
+  - INR
+  - JPY
+  - KRW
+  - MYR
+  - SGD
+  - USD
+  - ZAR
+  - NZD
+  - SEK
+  - NOK
+  - DKK
+  - PLN
+  - THB
+  - PHP
+  - BHD
+  - KWD
+  - OMR
+  - QAR
+  - SAR
+  - TRY
+  - BRL
+  - MXN
+  - IDR
+  - LKR
+  - PKR
+  - BDT
+  - NPR
+  - MUR
+  - KES
+  - UGX
+  - TZS
+  - NGN
+  - EGP
+  - MAD
+  - ILS
+  - RUB
+  - CLP
+  - COP
+
+amount:
+  max_abs_value: 1.0e15
+  non_positive_severity: S3
+  parse_failed_severity: S4
+  overflow_severity: S4
+
+dates:
+  future_date_severity: S3
+  impossible_year_low: 1900
+  impossible_year_high: 2100
+  impossible_date_severity: S5
+  parse_failed_with_raw_severity: S4
+
+identifiers:
+  ifsc_column: destination_ifsc_standardized
+  ifsc_fallback: destination_ifsc
+  bic_columns:
+    - swift_code_standardized
+    - counterparty_bic_standardized
+  bic_fallbacks:
+    - swift_code
+    - counterparty_bic
+  branch_column: branch_code_standardized
+  branch_fallback: branch_code
+  txn_id_column: txn_id_standardized
+  txn_id_fallback: txn_id
+  ifsc_pattern: "^[A-Z]{4}0[A-Z0-9]{6}$"
+  bic_pattern: "^[A-Z0-9]{8}([A-Z0-9]{3})?$"
+  branch_min_length: 4
+  malformed_identifier_severity: S3
+
+fx:
+  exchange_rate_column: exchange_rate
+  from_currency_column: from_currency
+  to_currency_column: to_currency
+  invalid_rate_severity: S3
+  missing_rate_when_pair_severity: S3
+  unsupported_currency_severity: S2
+
+enums:
+  transaction_status:
+    column: status
+    allow_blank: true
+    allowed:
+      - SUCCESS
+      - FAILED
+      - PENDING
+      - SETTLED
+      - REVERSED
+      - CANCELLED
+      - UNKNOWN
+    severity: S3
+  reconciliation_status:
+    column: reconciliation_status
+    allow_blank: true
+    allowed:
+      - FULL_MATCH
+      - PARTIAL_MATCH
+      - UNMATCHED
+      - BREAK
+      - PENDING
+    severity: S3
+  payment_channel:
+    column: channel
+    allow_blank: true
+    allowed:
+      - BRANCH
+      - ATM
+      - MOBILE
+      - ONLINE
+      - POS
+      - API
+      - SWIFT
+      - RTGS
+      - NEFT
+      - IMPS
+      - CARD
+      - TREASURY
+      - TRADER
+      - CUSTOMER
+      - BRANCH_OPS
+    severity: S3
+  debit_credit:
+    column: debit_credit
+    allow_blank: true
+    allowed:
+      - DEBIT
+      - CREDIT
+    severity: S3
+
+data_quality:
+  duplicate_transaction_severity: S2
+  null_density_threshold: 0.85
+  null_density_severity: S1
+  placeholder_tokens:
+    - END_OF_FILE
+    - "<NA>"
+    - "N/A"
+    - "NULL"
+    - "TBD"
+  placeholder_severity: S2
+  unicode_replacement_char: "\ufffd"
+  unicode_issue_severity: S2

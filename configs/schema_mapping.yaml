@@ -1,0 +1,112 @@
+# Silver-layer standardization mapping (canonical names, parsers, enums).
+# All transformations are deterministic; adjust per feed as new sources onboard.
+
+version: 2
+
+# Map bronze header (after ingestion snake_case) to canonical column names.
+column_synonyms:
+  processing_batch_id_2: secondary_processing_batch_id
+
+# Date columns: originals preserved as {col}_raw; outputs {col}_parsed, {col}_parse_confidence, {col}_parse_failed
+date_columns:
+  - txn_date
+  - txn_timestamp
+  - settlement_date
+  - messy_txn_date
+  - trade_date
+  - value_date
+  - trade_timestamp
+  - holiday_date
+  - opening_date
+  - date_of_birth
+  - kyc_expiry_date
+  - last_transaction_date
+  - date_format_local
+
+# Compound / messy monetary strings (raw preserved as {col}_raw before parsing).
+amount_columns:
+  - messy_amount
+  - amount_inr
+  - processing_charge
+  - gst_on_charge
+  - fee_amount
+  - tax_amount
+  - total_cost
+  - converted_amount
+  - amount_from
+  - amount_jpy
+  - amount_usd_equiv
+
+# Business identifiers: originals kept; {col}_standardized added.
+identifier_columns:
+  - txn_id
+  - settlement_reference
+  - utr_number
+  - bank_ref_no
+  - batch_id
+  - destination_ifsc
+  - swift_code
+  - counterparty_bic
+  - primary_account_number
+  - source_account
+  - destination_account
+  - branch_code
+  - primary_branch_code
+  - reference_number
+  - rrn
+  - auth_code
+
+# Enum / code-like fields: normalized in-place after optional synonym map.
+enum_columns:
+  - payment_type
+  - debit_credit
+  - status
+  - reconciliation_status
+  - channel
+  - customer_type
+  - settlement_status
+  - txn_type
+  - confirmation_method
+  - dealing_method
+
+# Optional explicit enum synonym maps (case-insensitive keys).
+enum_maps:
+  debit_credit:
+    "d": "DEBIT"
+    "c": "CREDIT"
+    "dr": "DEBIT"
+    "cr": "CREDIT"
+  status:
+    "success": "SUCCESS"
+    "failed": "FAILED"
+    "pending": "PENDING"
+    "settled": "SETTLED"
+
+# Force UPPERCASE after whitespace normalization for these code columns.
+string_uppercase_columns:
+  - payment_type
+  - debit_credit
+  - status
+  - reconciliation_status
+  - channel
+  - customer_type
+  - settlement_status
+  - txn_type
+  - confirmation_method
+  - dealing_method
+  - exception_code
+  - currency_code
+  - from_currency
+  - to_currency
+
+# String sanitation applies to string-like columns except these (paths, free text handled lightly).
+string_sanitize_exclude_columns:
+  - ingestion_timestamp
+  - source_file_name
+  - processing_batch_id
+  - txn_hash
+  - checksum_hash
+  - checksum
+  - comment
+  - notes
+  - narration

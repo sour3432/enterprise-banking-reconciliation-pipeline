@@ -1,0 +1,54 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment and secrets
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs and runtime output
+logs/
+*.log
+
+# Large or generated data (keep structure with .gitkeep where needed)
+*.csv
+!configs/country_mapping.csv
+data/raw/**/*.csv
+data/bronze/**/*.csv
+data/silver/**/*.csv
+data/gold/**/*.csv
+data/rejects/**/*.csv
+data/audit/**/*.csv
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Build
+dist/
+build/
+*.egg-info/

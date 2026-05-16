@@ -1,0 +1,64 @@
+# Global Banking Reconciliation Pipeline — application configuration
+# Paths are relative to the project root unless absolute paths are supplied.
+
+raw_data_path: data/raw
+bronze_path: data/bronze
+silver_path: data/silver
+gold_path: data/gold
+rejects_path: data/rejects
+audit_path: data/audit
+output_path: outputs
+log_directory: logs
+log_level: INFO
+base_currency: USD
+
+# Ingestion: chunked reads, engine selection, and manifest output path (under output_path).
+ingestion:
+  csv_chunksize: 100000
+  # "python" counts skipped malformed rows for PARTIAL status; "c" is faster but cannot count skips.
+  csv_engine: python
+  bronze_ingestion_report_path: profiling_reports/bronze_ingestion_report.csv
+
+standardization:
+  csv_chunksize: 100000
+  schema_mapping_path: configs/schema_mapping.yaml
+  audit_log_filename: standardization_audit_log.csv
+  summary_report_path: profiling_reports/standardization_summary.csv
+
+validation:
+  validation_rules_path: configs/validation_rules.yaml
+  validation_audit_log_filename: validation_audit_log.csv
+  validation_summary_path: profiling_reports/validation_summary.csv
+
+duplicate_intelligence:
+  duplicate_detail_path: profiling_reports/duplicate_intelligence_detailed.csv
+  duplicate_summary_path: profiling_reports/duplicate_intelligence_summary.csv
+  retry_window_seconds: 300
+  fuzzy_time_window_seconds: 86400
+  amount_relative_tolerance: 0.005
+  max_fuzzy_pairs_per_block: 2000
+
+reconciliation:
+  reconciliation_audit_log_filename: reconciliation_audit_log.csv
+  reconciliation_summary_path: reconciliation_reports/reconciliation_summary.csv
+  amount_tolerance_abs: 0.01
+  amount_tolerance_pct: 0.001
+  timestamp_window_hours: 72
+  fx_rate_tolerance_pct: 0.02
+
+gold_layer:
+  transaction_master_filename: gold_transaction_master.csv
+  duplicate_summary_filename: gold_duplicate_summary.csv
+  validation_summary_filename: gold_validation_summary.csv
+  reconciliation_summary_filename: gold_reconciliation_summary.csv
+  fx_variance_summary_filename: gold_fx_variance_summary.csv
+
+reporting:
+  excel_output_dir: excel_reports
+  executive_workbook: Executive_Operations_Summary.xlsx
+  reconciliation_workbook: Reconciliation_Report.xlsx
+  validation_workbook: Validation_Exception_Report.xlsx
+  duplicate_workbook: Duplicate_Intelligence_Report.xlsx
+  audit_workbook: Audit_Traceability_Report.xlsx
+  master_executive_workbook: Enterprise_Banking_Operations_Master_Report.xlsx
+  audit_detail_row_cap: 50000

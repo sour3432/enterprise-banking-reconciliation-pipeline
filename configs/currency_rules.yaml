@@ -1,0 +1,9 @@
+# Currency normalization and FX handling (placeholder)
+#
+# Future keys may include:
+#   - supported_iso_codes
+#   - rounding_policy
+#   - fx_source_reference
+#
+version: 1
+supported_iso_codes: []
