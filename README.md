@@ -1,84 +1,158 @@
 # Global Banking Reconciliation Pipeline
 
-Enterprise-style Python foundation for multi-source banking transaction processing: ingestion, standardization, validation, reconciliation, audit, and reporting. This repository currently provides **architecture and scaffolding only**; domain logic is intentionally deferred.
+> Enterprise-grade banking operations simulation platform for large-scale financial transaction reconciliation, validation governance, duplicate intelligence, audit traceability, and executive operational reporting.
 
-## Business problem
+---
 
-Banking operations teams routinely reconcile transactions across core banking, payment rails, card schemes, and internal ledgers. Source formats differ, reference data drifts, and controls require explainable outcomes. This project simulates a platform that must standardize messy inputs, enforce validation, reconcile balances and references, and produce auditable evidence for regulators and internal audit.
+# Executive Overview
 
-## Architecture summary
+This project simulates a multinational banking operations environment designed to process highly messy financial transaction data across multiple operational layers.
 
-- **Medallion-style data zones** under `data/` (`raw` → `bronze` → `silver` → `gold`) with explicit `rejects` and `audit` sinks.
-- **Domain modules** under `src/`, each with a single façade class (`*Engine`) to keep orchestration readable and to allow future dependency injection.
-- **Configuration as data**: runtime paths in `config.yaml`; rule and mapping catalogs in `configs/`.
-- **Observability**: centralized logging via `src/utils/logger.py`, with optional file output under `logs/`.
-- **Entrypoint**: `main.py` loads configuration, configures logging, and enumerates pipeline stages without executing business processing.
+The platform demonstrates:
 
-## Repository layout
+- Enterprise reconciliation workflows
+- Validation governance systems
+- Duplicate intelligence monitoring
+- Audit-grade traceability
+- Operational risk visibility
+- Executive reporting automation
+- Bronze / Silver / Gold data architecture
+- Large-scale messy data normalization
 
-| Path | Purpose |
-|------|---------|
-| `data/raw` … `data/gold` | Staged datasets aligned to medallion semantics |
-| `data/rejects` | Records failing validation with reasons |
-| `data/audit` | Lineage, batch metadata, and controls evidence |
-| `configs/` | YAML/CSV catalogs for validation, currency, schema mapping, geography |
-| `src/ingestion` | Landing and cataloging multi-source feeds |
-| `src/profiling` | Quality and distribution signals |
-| `src/standardization` | Canonical model and enrichment |
-| `src/validation` | Rule execution and reject routing |
-| `src/reconciliation` | Matching and break analysis |
-| `src/audit` | Immutable audit event persistence |
-| `src/reporting` | Excel and dashboard-oriented outputs |
-| `src/utils` | Cross-cutting utilities (logging, future IO helpers) |
-| `outputs/` | Generated reports and extracts |
-| `notebooks/` | Exploratory analysis (not part of production path) |
-| `tests/` | Automated tests (to be expanded) |
-| `docs/` | Architecture and process documentation |
+This is NOT a dashboard tutorial project.
 
-## Pipeline stages
+The objective was to simulate how real banking operations teams process, validate, reconcile, monitor, audit, and operationalize large volumes of inconsistent financial transaction data.
 
-1. **Ingestion** — discover batches, parse sources, persist to raw/bronze with batch identifiers.
-2. **Profiling** — summarize completeness, cardinality, and anomalies for operational review.
-3. **Standardization** — apply schema mapping, currency normalization, and reference joins.
-4. **Validation** — enforce contracts and business rules; isolate rejects.
-5. **Reconciliation** — match ledgers and classify breaks with explainability metadata.
-6. **Audit** — record decisions, rule versions, and lineage suitable for compliance review.
-7. **Reporting** — render Excel summaries, reconciliation packs, and dashboard feeds.
+---
 
-## Future modules (planned extensions)
+# Business Problem
 
-- Workflow orchestration (Airflow / Dagster / cloud-native scheduler adapters).
-- Secrets management integration and per-environment overlays.
-- Data quality contracts as versioned artifacts (Great Expectations or custom).
-- API layer for exception workflows and human approvals.
+Large financial institutions receive transaction feeds from multiple systems:
 
-## Technologies
+- payment gateways
+- treasury systems
+- settlement providers
+- FX conversion systems
+- regional banking feeds
+- operational data vendors
 
-| Area | Stack |
-|------|--------|
-| Data manipulation | `pandas`, `numpy`, `pyarrow` |
-| Analytics engine | `duckdb` |
-| Excel reporting | `openpyxl`, `xlsxwriter` |
-| Fuzzy matching | `rapidfuzz` |
-| Validation | `pydantic`, `pandera` |
-| Configuration | `pyyaml` |
-| Dates | `python-dateutil` |
+These feeds are often:
 
-## Quick start
+- inconsistent
+- partially corrupted
+- duplicated
+- delayed
+- schema-misaligned
+- operationally unstable
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-python main.py
+Manual reconciliation and validation workflows create:
+
+- operational delays
+- settlement mismatches
+- unresolved exposure
+- audit risk
+- reporting inconsistency
+- high operational overhead
+
+This project simulates an enterprise pipeline designed to automate and operationalize those workflows.
+
+---
+
+# Enterprise Architecture
+
+```text
+RAW FINANCIAL DATA
+        ↓
+INGESTION LAYER
+        ↓
+STANDARDIZATION ENGINE
+        ↓
+VALIDATION GOVERNANCE
+        ↓
+DUPLICATE INTELLIGENCE
+        ↓
+RECONCILIATION ENGINE
+        ↓
+AUDIT TRACEABILITY
+        ↓
+GOLD REPORTING LAYER
+        ↓
+EXECUTIVE OPERATIONS WORKBOOK
 ```
 
-## Documentation
+---
 
-- [`docs/architecture.md`](docs/architecture.md) — component view and boundaries
-- [`docs/pipeline_flow.md`](docs/pipeline_flow.md) — stage sequence and data movement
-- [`docs/business_rules.md`](docs/business_rules.md) — where rules will live (placeholder)
+# Executive Dashboard
 
-## License
+![Executive Dashboard](screenshots/executive-dashboard.png)
 
-Add a license file when your organization’s legal requirements are known.
+---
+
+# Operations Scorecard
+
+![Operations Scorecard](screenshots/operations-scorecard.png)
+
+---
+
+# Reconciliation Overview
+
+![Reconciliation Overview](screenshots/reconciliation-overview.png)
+
+---
+
+# Core Capabilities
+
+- Large-scale messy financial transaction processing
+- Enterprise reconciliation intelligence
+- Validation governance and severity escalation
+- Duplicate detection and operational risk analysis
+- Audit-grade lineage and traceability
+- Executive operational reporting automation
+- Multi-stage Bronze / Silver / Gold data architecture
+- Financial controls and exception monitoring
+
+---
+
+# Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| Programming | Python |
+| Data Processing | pandas, numpy |
+| Validation | pandera, PyYAML |
+| Reporting | openpyxl, xlsxwriter |
+| Architecture | Modular enterprise pipeline |
+| Output | Enterprise operational workbooks |
+
+---
+
+# Repository Structure
+
+```text
+src/
+├── ingestion/
+├── standardization/
+├── validation/
+├── reconciliation/
+├── reporting/
+├── audit/
+
+configs/
+data/
+outputs/
+docs/
+```
+
+---
+
+# Final Deliverables
+
+The platform automatically generates:
+
+- Executive Operations Master Workbook
+- Reconciliation Intelligence Reports
+- Validation Exception Reports
+- Duplicate Intelligence Reports
+- Audit Traceability Reports
+
+All reports are generated through a fully automated enterprise pipeline execution workflow.
